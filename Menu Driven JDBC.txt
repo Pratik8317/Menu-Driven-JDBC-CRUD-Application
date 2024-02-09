@@ -1,0 +1,123 @@
+package jdbc_Package;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
+public class MenuDriven {
+
+	public static void main(String[] args) {
+		try
+		{
+			Scanner sc=new Scanner(System.in);
+			System.out.println("Enter Your Choois: ");
+			
+			do {
+				System.out.println("1. For Insert data");
+				System.out.println("2. For Update data");
+				System.out.println("3. For Delete data");
+				System.out.println("4. For Retrive data");
+				
+				int ch=sc.nextInt();
+				
+				switch(ch)
+				{
+				case 1:
+					System.out.println("Please Enter Roll No, Name, Score(Percentage), Address of a Student: ");
+					int rollno=sc.nextInt();
+					String name=sc.next();
+					float score=sc.nextFloat();
+					String address=sc.next();
+					try 
+					{
+						Class.forName("com.mysql.cj.jdbc.Driver");		
+						Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc", "root", "Pratik@123");					
+						PreparedStatement ps=con.prepareStatement("insert into student values(?, ?, ?, ?)");
+						ps.setInt(1, rollno);
+						ps.setString(2, name);
+						ps.setFloat(3, score);
+						ps.setString(4, address);
+						int x=ps.executeUpdate();
+						System.out.println(x+" Records Are Inserted.");
+						con.close();
+					} 
+					catch (Exception e) 
+					{
+						System.out.println(e);
+					}
+					break;
+				case 2:
+					System.out.println("Enter Roll No and Score of a Student: ");
+					int r=sc.nextInt();
+					float s=sc.nextFloat();
+					try 
+					{
+						Class.forName("com.mysql.cj.jdbc.Driver");		
+						Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc", "root", "Pratik@123");					
+						PreparedStatement ps=con.prepareStatement("update student set score=? where rollno=?");
+						ps.setFloat(1, s);
+						ps.setInt(2, r);
+						int x=ps.executeUpdate();
+						System.out.println(x+" Records Are Updated.");
+						con.close();
+					} 
+					catch (Exception e) 
+					{
+						System.out.println(e);
+					}
+					break;
+				case 3:
+					System.out.println("Enter The Roll No of A Student TO Delete The Record: ");
+					int i=sc.nextInt();
+					try 
+					{
+						Class.forName("com.mysql.cj.jdbc.Driver");		
+						Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc", "root", "Pratik@123");					
+						PreparedStatement ps=con.prepareStatement("delete from student where rollno=?");
+						ps.setInt(1, i);
+						int x=ps.executeUpdate();
+						System.out.println(x+" Records Are Deleted.");
+						con.close();
+					} 
+					catch (Exception e) 
+					{
+						System.out.println(e);
+					}
+					
+					break;
+				case 4:
+					try
+					{
+						System.out.println("All Records: ");
+						Class.forName("com.mysql.cj.jdbc.Driver");		
+						Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc", "root", "Pratik@123");					
+						PreparedStatement ps=con.prepareStatement("select * from student");
+						ResultSet rs=ps.executeQuery();
+						while(rs.next())
+						{
+							System.out.println(rs.getInt("rollno")+"\t"+rs.getString("name")+"\t"+rs.getFloat("score")+"\t"+rs.getString("address"));
+						}
+						con.close();
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
+					}
+					break;
+				default: 
+					System.out.println("Invalid Case...(Valid Cases Are 1 to 4)");
+				}
+				
+			}while(true);
+			
+			
+			
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+
+	}
+
+}
